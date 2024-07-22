@@ -1,0 +1,21 @@
+name: Run Python Script
+
+on:
+  push:
+    branches:
+      - main  # Запускаем при каждом пуше в ветку "main"
+
+jobs:
+  run_python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3  # Выгружаем код из репозитория
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.x'  # Выберите нужную версию Python
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt  # Установка зависимостей, если есть
+      - name: Run Python script
+        run: python voicing.py  # Запуск вашего скрипта
