@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Спасибо!</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f2f2f2;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      margin: 0;
+    }
+
+    .header {
+      background-color: #333;
+      color: #fff;
+      padding: 15px;
+      display: flex;
+      align-items: center;
+    }
+
+    .header img {
+      width: 50px;
+      height: 50px;
+      margin-right: 15px;
+    }
+
+    .content {
+      padding: 20px;
+      flex: 1;
+      background-image: url("https://images.unsplash.com/photo-1507608715302-17c17105a20c?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1050&q=80");
+      background-size: cover;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .voting-container {
+      background-color: rgba(255, 255, 255, 0.8);
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      text-align: center;
+      max-width: 60%;
+      max-height: 80vh;
+      overflow: auto;
+    }
+
+    h1 {
+      color: #fff;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      color: #333;
+      margin-bottom: 20px;
+    }
+
+    /*  Стили для телефона */
+    @media (max-width: 768px) {
+      .header img {
+        width: 30px;
+        height: 30px;
+      }
+      .voting-container {
+        max-width: 90%;
+        max-height: 80vh;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <img src="https://storage.yandexcloud.net/dobro-static/prod/imported/pictures/5a15d988f45842c7965a8982af8725c0.jpg" alt="Логотип">
+    <h1>Опрос ТПД</h1>
+  </header>
+  <div class="content">
+    <div class="voting-container">
+      <h2>Спасибо за активное участие в голосовании!</h2>
+    </div>
+  </div>
+</body>
+</html>
