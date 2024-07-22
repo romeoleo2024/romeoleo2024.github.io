@@ -1,4 +1,4 @@
-name: Run Python Script
+name: Deploy Flask App
 
 on:
   push:
@@ -6,16 +6,17 @@ on:
       - main  # Запускаем при каждом пуше в ветку "main"
 
 jobs:
-  run_python:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3  # Выгружаем код из репозитория
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.x'  # Выберите нужную версию Python
+          python-version: '3.8'  # Выберите нужную версию Python
       - name: Install dependencies
         run: |
           pip install -r requirements.txt  # Установка зависимостей, если есть
-      - name: Run Python script
-        run: python index.py  # Запуск вашего скрипта
+      - name: Run Flask app
+        run: |
+          flask run --host 0.0.0.0 --port 8080  # Запуск сервера Flask
