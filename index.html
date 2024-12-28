@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Онлайн-елка с пожеланиями</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #ffffff; /* Белый фон */
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+            margin: 0;
+        }
+
+        .header {
+            background-color: orange; /* Оранжевый цвет */
+            color: #fff;
+            padding: 12px; /* Уменьшил padding на 20% */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .header img {
+            width: 40px; /* Уменьшил размер на 20% */
+            height: 40px; /* Уменьшил размер на 20% */
+            margin-right: 12px; /* Уменьшил отступ на 20% */
+        }
+
+        .content {
+            padding: 2px; /* Оставляем 2px отступов */
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .tree-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: calc(100% - 4px); /* Занимает всю ширину с учетом отступов */
+            height: calc(100% - 4px); /* Занимает всю высоту с учетом отступов */
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .tree {
+            position: relative;
+            width: 1400px; /* Изначальные размеры елки */
+            height: 800px; /* Изначальные размеры елки */
+            background-image: url('2.jpg');
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            margin-bottom: 5px;
+            transition: transform 0.1s ease; /* Плавное изменение масштаба */
+        }
+
+        .controls {
+            margin-bottom: 20px; /* Переместили кнопки над елкой */
+            display: flex;
+            gap: 10px; /* Отступ между кнопками */
+        }
+
+        .controls button {
+            padding: 10px 20px; /* Размер кнопок */
+            font-size: 18px; /* Размер текста */
+            background-color: #ffffff; /* Белый фон */
+            color: #ff0000; /* Красный текст */
+            border: 2px solid #ff0000; /* Красная граница */
+            border-radius: 50%; /* Круглые кнопки */
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Тень */
+            transition: all 0.3s ease; /* Плавные переходы */
+        }
+
+        .controls button:hover {
+            background-color: #ff0000; /* Красный фон при наведении */
+            color: #ffffff; /* Белый текст при наведении */
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2); /* Увеличенная тень */
+        }
+
+        .ball {
+            position: absolute;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: #fff;
+            cursor: pointer;
+            animation: float 3s infinite ease-in-out;
+            padding: 10px;
+            box-sizing: border-box;
+            user-select: none; /* Запрещаем выделение текста при перетаскивании */
+            overflow: hidden; /* Скрываем лишнее содержимое */
+        }
+
+        .resize-handle {
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: #fff;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: se-resize; /* Курсор для изменения размера */
+            font-size: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Тень для красоты */
+            display: none; /* Скрыт по умолчанию */
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .input-container {
+            display: flex;
+            align-items: flex-start; /* Выравниваем элементы по верхнему краю */
+            gap: 30px; /* Отступ между полем и кнопкой */
+            width: 100%;
+            max-width: 800px; /* Ограничиваем ширину контейнера */
+        }
+
+        #wish-input {
+            flex: 1; /* Поле занимает все доступное пространство */
+            padding: 10px;
+            font-size: 19px;
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            overflow-y: auto; /* Добавил возможность прокрутки */
+            resize: vertical; /* Позволяет изменять высоту поля ввода */
+            max-height: 100px; /* Максимальная высота для прокрутки */
+        }
+
+        #add-wish {
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #5cb85c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            align-self: flex-start; /* Кнопка всегда на уровне с полем */
+        }
+
+        #add-wish:hover {
+            background-color: #4cae4c;
+        }
+
+        @media (max-width: 768px) {
+            .header img {
+                width: 32px; /* Уменьшил размер на 20% для мобильных */
+                height: 32px; /* Уменьшил размер на 20% для мобильных */
+            }
+            .tree-container {
+                padding: 15px; /* Уменьшаем padding для мобильных */
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <img src="https://uniteam.mosgortur.ru/ru/Data/v3/header.png?v=4c99d5ec-96ec-4003-ae47-e37d817e79a9" alt="Логотип">
+        <h1>Новогодняя елка с пожеланиями</h1>
+    </header>
+    <div class="content">
+        <div class="tree-container">
+            <div class="controls">
+                <button id="zoom-in">+</button>
+                <button id="zoom-out">-</button>
+            </div>
+            <div class="tree">
+                <!-- Здесь будут появляться шарики с пожеланиями -->
+            </div>
+            <div class="input-container">
+                <textarea id="wish-input" placeholder="Напишите ваше пожелание..." maxlength="50"></textarea>
+                <button id="add-wish">Добавить</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('add-wish').addEventListener('click', addWish);
+        document.getElementById('zoom-in').addEventListener('click', zoomIn);
+        document.getElementById('zoom-out').addEventListener('click', zoomOut);
+
+        const tree = document.querySelector('.tree');
+        let scale = 1;
+
+        function zoomIn() {
+            scale += 0.1;
+            tree.style.backgroundSize = `${100 * scale}%`; // Масштабируем только фон
+        }
+
+        function zoomOut() {
+            scale -= 0.1;
+            if (scale < 0.1) scale = 0.1;
+            tree.style.backgroundSize = `${100 * scale}%`; // Масштабируем только фон
+        }
+
+        tree.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            if (e.deltaY < 0) {
+                zoomIn();
+            } else {
+                zoomOut();
+            }
+        });
+
+        const ballColors = ['#FF0000', '#00FF00', '#0000FF', '#FFFF00', '#FF00FF', '#00FFFF'];
+
+        function addWish() {
+            const input = document.getElementById('wish-input');
+            const wishText = input.value.trim();
+
+            if (wishText === '') {
+                alert('Пожалуйста, введите пожелание!');
+                return;
+            }
+
+            const ball = document.createElement('div');
+            ball.classList.add('ball');
+
+            // Заменяем пробелы на <br> для переноса строк
+            const formattedText = wishText.replace(/ /g, '<br>');
+            ball.innerHTML = formattedText; // Используем innerHTML для вставки HTML
+
+            const randomColor = ballColors[Math.floor(Math.random() * ballColors.length)];
+            ball.style.backgroundColor = randomColor;
+
+            const textLength = wishText.length;
+            const ballSize = Math.max(40, textLength * 10);
+            ball.style.width = `${ballSize}px`;
+            ball.style.height = `${ballSize}px`;
+
+            const x = Math.random() * (tree.offsetWidth - ballSize);
+            const y = Math.random() * (tree.offsetHeight - ballSize);
+            ball.style.left = `${x}px`;
+            ball.style.top = `${y}px`;
+
+            // Добавляем ручку для изменения размера
+            const resizeHandle = document.createElement('div');
+            resizeHandle.classList.add('resize-handle');
+            resizeHandle.innerHTML = '↗️'; // Иконка стрелки
+            tree.appendChild(resizeHandle); // Добавляем ручку в контейнер .tree
+
+            // Обработчик двойного клика для показа ручки
+            ball.addEventListener('dblclick', (e) => {
+                e.stopPropagation(); // Останавливаем всплытие события
+                resizeHandle.style.display = 'flex'; // Показываем ручку
+                updateResizeHandlePosition(ball, resizeHandle); // Обновляем позицию ручки
+            });
+
+            // Обработчик для изменения размера шарика
+            let isResizing = false;
+            resizeHandle.addEventListener('mousedown', (e) => {
+                e.stopPropagation(); // Останавливаем всплытие события
+                isResizing = true;
+                const startWidth = ball.offsetWidth;
+                const startHeight = ball.offsetHeight;
+                const startX = e.clientX;
+                const startY = e.clientY;
+
+                bringToFront(ball); // Перемещаем шарик на передний план
+
+                document.addEventListener('mousemove', onMouseMove);
+                document.addEventListener('mouseup', onMouseUp);
+
+                function onMouseMove(e) {
+                    if (isResizing) {
+                        const newWidth = startWidth + (e.clientX - startX);
+                        const newHeight = startHeight + (e.clientY - startY);
+                        ball.style.width = `${Math.max(40, newWidth)}px`;
+                        ball.style.height = `${Math.max(40, newHeight)}px`;
+                        updateResizeHandlePosition(ball, resizeHandle); // Обновляем позицию ручки
+                    }
+                }
+
+                function onMouseUp() {
+                    isResizing = false;
+                    document.removeEventListener('mousemove', onMouseMove);
+                    document.removeEventListener('mouseup', onMouseUp);
+                }
+            });
+
+            // Скрываем ручку при клике вне шарика
+            document.addEventListener('mousedown', (e) => {
+                if (!ball.contains(e.target) && e.target !== resizeHandle) {
+                    resizeHandle.style.display = 'none';
+                }
+            });
+
+            // Добавляем возможность перемещения шарика
+            makeBallDraggable(ball, resizeHandle);
+
+            tree.appendChild(ball);
+
+            input.value = ''; // Очищаем поле ввода
+        }
+
+        // Функция для обновления позиции ручки
+        function updateResizeHandlePosition(ball, resizeHandle) {
+            const ballRect = ball.getBoundingClientRect();
+            const treeRect = ball.parentElement.getBoundingClientRect();
+
+            // Позиция ручки: 2px правее правой границы шарика и 2px ниже нижней границы шарика
+            resizeHandle.style.left = `${ballRect.right - treeRect.left - 10}px`;
+            resizeHandle.style.top = `${ballRect.bottom - treeRect.top - 10}px`;
+        }
+
+        // Функция для перемещения шариков
+        function makeBallDraggable(ball, resizeHandle) {
+            let isDragging = false;
+            let offsetX, offsetY;
+
+            ball.addEventListener('mousedown', (e) => {
+                if (e.target === ball) { // Перетаскивание только за шарик, а не за ручку
+                    isDragging = true;
+                    offsetX = e.clientX - ball.getBoundingClientRect().left;
+                    offsetY = e.clientY - ball.getBoundingClientRect().top;
+                    bringToFront(ball); // Перемещаем шарик на передний план
+                }
+            });
+
+            document.addEventListener('mousemove', (e) => {
+                if (isDragging) {
+                    const treeRect = tree.getBoundingClientRect();
+
+                    // Ограничиваем перемещение шарика в пределах елки
+                    let newX = e.clientX - treeRect.left - offsetX;
+                    let newY = e.clientY - treeRect.top - offsetY;
+
+                    // Проверяем границы
+                    newX = Math.max(0, Math.min(tree.offsetWidth - ball.offsetWidth, newX));
+                    newY = Math.max(0, Math.min(tree.offsetHeight - ball.offsetHeight, newY));
+
+                    ball.style.left = `${newX}px`;
+                    ball.style.top = `${newY}px`;
+
+                    // Обновляем позицию ручки при перемещении шарика
+                    updateResizeHandlePosition(ball, resizeHandle);
+                }
+            });
+
+            document.addEventListener('mouseup', () => {
+                isDragging = false;
+            });
+        }
+
+        // Функция для перемещения шарика на передний план
+        function bringToFront(ball) {
+            const tree = document.querySelector('.tree');
+            const balls = tree.querySelectorAll('.ball');
+            let maxZIndex = 0;
+
+            // Находим максимальный z-index среди шариков
+            balls.forEach(b => {
+                const zIndex = parseInt(window.getComputedStyle(b).zIndex, 10);
+                if (zIndex > maxZIndex) {
+                    maxZIndex = zIndex;
+                }
+            });
+
+            // Устанавливаем z-index на 1 больше максимального
+            ball.style.zIndex = maxZIndex + 1;
+        }
+    </script>
+</body>
+</html>
